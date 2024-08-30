@@ -8,7 +8,14 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 async function run() {
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({
+        model: "gemini-pro",
+        generationConfig: {
+            candidateCount: 1,
+            maxOutputTokens: 100,
+            temperature: 1.0,
+        },
+    });
 
     const prompt = await fazerPergunta("Me faça uma pergunta: ");
 
