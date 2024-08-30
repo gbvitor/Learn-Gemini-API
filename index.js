@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 async function run() {
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     const prompt = await fazerPergunta("Me fale uma pergunta: ");
 
