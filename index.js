@@ -1,34 +1,31 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import fazerPergunta from "./pergunta.js";
+import { fazerPergunta } from "./pergunta.js";
+import { perguntar } from "./perguntaLivre.js";
+import { consultar } from "./consultaDestino.js";
+import { processaImagem } from "./processaImagem.js";
+import { categorizar } from "./categorizador.js";
 
-// Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+async function principal() {
+    const escolha = await fazerPergunta(`Escolha uma das opções abaixo: \n
+  1. Fazer uma pergunta livre sobre um destino;
+  2. Comparação de destinos por categorias;
+  3. Ver informações com base em uma imagem;
+  4. Fazer a análise de sentimentos baseado em arquivo texto
+  \nOpção desejada: `);
 
-async function run() {
-    // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({
-        model: "gemini-pro",
-        generationConfig: {
-            candidateCount: 1,
-            maxOutputTokens: 100,
-            temperature: 1.0,
-        },
-    });
-
-    const prompt = await fazerPergunta("Me faça uma pergunta: ");
-
-    // Count the number of tokens in the prompt
-    const countResult = await model.countTokens(prompt);
-    const generateResult = await model.generateContent(prompt);
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    console.log(text);
-    console.log(`Tokens: ${countResult.totalTokens}`);
-    console.log(generateResult.response.usageMetadata);
+    if (escolha === "1") {
+        await perguntar();
+    } else if (escolha === "2") {
+        await consultar();
+    } else if (escolha === "3") {
+        const imagem = await fazerPergunta(
+            "\nMe informe o caminho completo e o nome da imagem: "
+        );
+        await processaImagem(imagem);
+    } else if (escolha === "4") {
+        await categorizar();
+    } else {
+        console.log("Escolha inválida.");
+    }
 }
 
-run();
+principal();
