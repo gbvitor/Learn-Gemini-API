@@ -1,6 +1,6 @@
 import readline from "readline";
 
-export default function fazerPergunta(pergunta) {
+export function fazerPergunta(pergunta) {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
